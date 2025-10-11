@@ -404,10 +404,10 @@ class MWindow(QtWidgets.QWidget):
         ctrl.addWidget(self.btnShowImageFeatures)
 
         ctrl.addWidget(self.btnOpen); ctrl.addWidget(self.btnCam); ctrl.addWidget(self.btnStop)
+        # ctrl.addSpacing(8)
+        # ctrl.addWidget(self.confLabel); ctrl.addWidget(self.confSlider,1) # 暂时不需要置信度修改
         ctrl.addSpacing(8)
-        #ctrl.addWidget(self.confLabel); ctrl.addWidget(self.confSlider,1) # 暂时不需要置信度修改
-        ctrl.addSpacing(8)
-        ctrl.addWidget(QtWidgets.QLabel("设备"));  ctrl.addWidget(self.deviceBox)
+        ctrl.addWidget(self.deviceBox)
         ctrl.addWidget(self.btnSnap); ctrl.addWidget(self.btnSave)
         main.addLayout(ctrl)
 
@@ -645,6 +645,12 @@ class MWindow(QtWidgets.QWidget):
         self.proc = QtCore.QProcess(self)
         self.proc.setProcessChannelMode(QtCore.QProcess.MergedChannels)
         self.proc.setWorkingDirectory(str(script_path.parent))
+        # ★ 强制子进程输出 UTF-8（并关闭缓冲，保证实时/顺序）
+        env = QtCore.QProcessEnvironment.systemEnvironment()
+        env.insert("PYTHONIOENCODING", "utf-8")
+        env.insert("PYTHONUNBUFFERED", "1")
+        self.proc.setProcessEnvironment(env)
+
         self.proc.readyReadStandardOutput.connect(
             lambda: self._append_proc_output(self.proc.readAllStandardOutput()))
         self.proc.finished.connect(self._on_infer_finished)
@@ -749,10 +755,16 @@ class MWindow(QtWidgets.QWidget):
 
     # 收集子进程输出 + 解析类别
     def _append_proc_output(self, qbytearray):
+        b = bytes(qbytearray)
+        # ★ 多编码兜底：utf-8 -> gbk(cp936) -> replacement
         try:
-            text = bytes(qbytearray).decode("utf-8", "ignore")
-        except Exception:
-            text = str(qbytearray)
+            text = b.decode("utf-8")
+        except UnicodeDecodeError:
+            try:
+                text = b.decode("gbk", errors="strict")  # Windows 常用
+            except UnicodeDecodeError:
+                text = b.decode("utf-8", errors="replace")  # 保底可视
+
         if not text.strip():
             return
 
