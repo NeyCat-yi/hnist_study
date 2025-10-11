@@ -1,0 +1,262 @@
+[
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\1\\20140608115252Sb.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.585651695728302,
+    "probabilities": [
+      0.07893369346857071,
+      0.2328162044286728,
+      0.585651695728302,
+      0.07952271401882172,
+      0.02307564578950405
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\2\\06点12分40秒Sb-2.avi",
+    "predicted_class": 1,
+    "class_name": 1,
+    "confidence": 0.44273069500923157,
+    "probabilities": [
+      0.037293486297130585,
+      0.44273069500923157,
+      0.4330917298793793,
+      0.06702286005020142,
+      0.01986127346754074
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\2\\08点43分44秒Sb-2.avi",
+    "predicted_class": 1,
+    "class_name": 1,
+    "confidence": 0.4536333680152893,
+    "probabilities": [
+      0.03739180788397789,
+      0.4536333680152893,
+      0.4432034194469452,
+      0.04864184185862541,
+      0.0171295665204525
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\2\\20140608142437Sb.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.5901973247528076,
+    "probabilities": [
+      0.06288564950227737,
+      0.2624882161617279,
+      0.5901973247528076,
+      0.06704749166965485,
+      0.017381329089403152
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\3\\09点40分03秒Sb.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.562716007232666,
+    "probabilities": [
+      0.018570926040410995,
+      0.33404019474983215,
+      0.562716007232666,
+      0.06849340349435806,
+      0.016179457306861877
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\3\\20140613134109Sb.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.6649430990219116,
+    "probabilities": [
+      0.04358331114053726,
+      0.15795104205608368,
+      0.6649430990219116,
+      0.10805817693471909,
+      0.025464361533522606
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\3\\20140613134323Sb.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.692872941493988,
+    "probabilities": [
+      0.037959761917591095,
+      0.1627955585718155,
+      0.692872941493988,
+      0.08056057244539261,
+      0.025811152532696724
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\4\\00点49分40秒Sb-3.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.6863226294517517,
+    "probabilities": [
+      0.011644108220934868,
+      0.21408052742481232,
+      0.6863226294517517,
+      0.06866144388914108,
+      0.019291270524263382
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\4\\05点54分40秒Sb-1.avi",
+    "predicted_class": 1,
+    "class_name": 1,
+    "confidence": 0.5417072772979736,
+    "probabilities": [
+      0.039180412888526917,
+      0.5417072772979736,
+      0.35087427496910095,
+      0.05226210504770279,
+      0.015975944697856903
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\4\\20140613132029Sb.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.6651382446289062,
+    "probabilities": [
+      0.02749050222337246,
+      0.19373497366905212,
+      0.6651382446289062,
+      0.08802963048219681,
+      0.025606634095311165
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\5\\02点29分14秒Sb.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.601152241230011,
+    "probabilities": [
+      0.033264316618442535,
+      0.1792888194322586,
+      0.601152241230011,
+      0.15437176823616028,
+      0.03192286565899849
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\5\\05点46分26秒Sb-3.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.5325027108192444,
+    "probabilities": [
+      0.021765772253274918,
+      0.36082011461257935,
+      0.5325027108192444,
+      0.06141166761517525,
+      0.023499760776758194
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\5\\06点37分26秒Sb-5.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.6352902054786682,
+    "probabilities": [
+      0.02129615657031536,
+      0.2770952880382538,
+      0.6352902054786682,
+      0.04535814747214317,
+      0.02096019871532917
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\5\\06点40分26秒Sb-5.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.5788922905921936,
+    "probabilities": [
+      0.027058444917201996,
+      0.29006779193878174,
+      0.5788922905921936,
+      0.07699970155954361,
+      0.026981810107827187
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\5\\07点39分40秒Sb-9.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.5495523810386658,
+    "probabilities": [
+      0.022651847451925278,
+      0.3457971215248108,
+      0.5495523810386658,
+      0.061409253627061844,
+      0.020589366555213928
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\6\\02点22分26秒Sb-6.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.7256398797035217,
+    "probabilities": [
+      0.007627847138792276,
+      0.1553807407617569,
+      0.7256398797035217,
+      0.08471743017435074,
+      0.02663407288491726
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\6\\15点35分22秒Sb-7.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.7100945115089417,
+    "probabilities": [
+      0.011065992526710033,
+      0.15272793173789978,
+      0.7100945115089417,
+      0.10135398805141449,
+      0.02475760132074356
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\6\\15点36分22秒Sb-7.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.6532605290412903,
+    "probabilities": [
+      0.015926895663142204,
+      0.1948694884777069,
+      0.6532605290412903,
+      0.10334832221269608,
+      0.032594770193099976
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\6\\23点52分37秒Sb-2.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.6143099069595337,
+    "probabilities": [
+      0.017606031149625778,
+      0.29718610644340515,
+      0.6143099069595337,
+      0.049609988927841187,
+      0.021287990733981133
+    ]
+  },
+  {
+    "video_path": "D:\\zzb_data\\zzb_project\\视频理解\\dataset\\test\\6\\23点53分37秒Sb-2.avi",
+    "predicted_class": 2,
+    "class_name": 2,
+    "confidence": 0.6398815512657166,
+    "probabilities": [
+      0.016644567251205444,
+      0.2397998571395874,
+      0.6398815512657166,
+      0.07715412974357605,
+      0.026519911363720894
+    ]
+  }
+]
