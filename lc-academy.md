@@ -151,7 +151,7 @@ search_docs
 import os, getpass # 和配置 key 相关
 from langchain_ollama import ChatOllama # 模型相关
 from langsmith import traceable # LangSmith 相关
-from langgraph.graph import MessagesState # 追加到消息列表 以 MessagesState 作为状态来传递
+from langgraph.graph import MessagesState # 追加到消息列表 以 MessagesState 作为状态来传递 可以点进去看看样子
 from langchain_core.messages import HumanMessage, SystemMessage # 用户信息和系统信息
 from langgraph.graph import START, END, StateGraph # 创建 图 相关
 from langgraph.prebuilt import tools_condition # 如果 LLM 决定调用工具，通向叫 "tools" 的节点，否则去 END
@@ -347,5 +347,454 @@ messages = [HumanMessage(content="Multiply that by 2.")]
 messages = react_graph_memory.invoke({"messages": messages}, config)
 for m in messages['messages']:
     m.pretty_print()
+```
+
+
+
+# Module-2
+
+## state-reducers
+
+自定义 reducer
+
+例如，我们可以定义自定义 reducer 逻辑来合并列表，并处理输入中一个或两个都为 `None` 的情况
+
+```python
+def reduce_list(left: list | None, right: list | None) -> list:
+    """Safely combine two lists, handling cases where either or both inputs might be None.
+
+    Args:
+        left (list | None): The first list to combine, or None.
+        right (list | None): The second list to combine, or None.
+
+    Returns:
+        list: A new list containing all elements from both input lists.
+               If an input is None, it's treated as an empty list.
+    """
+    if not left:
+        left = []
+    if not right:
+        right = []
+    return left + right
+
+class DefaultState(TypedDict):
+    foo: Annotated[list[int], add]
+
+class CustomReducerState(TypedDict):
+    foo: Annotated[list[int], reduce_list] 
+```
+
+ `MessagesState` 有一个内置的 `messages` 键
+
+ 它还有一个内置的 `add_messages` reducer 来处理该键
+
+这两者是等效的。
+
+为了简洁起见，我们将通过 `from langgraph.graph import MessagesState` 来使用 `MessagesState` 类。
+
+```python
+# 新增信息
+from langgraph.graph.message import add_messages
+from langchain_core.messages import AIMessage, HumanMessage
+
+# Initial state
+initial_messages = [AIMessage(content="Hello! How can I assist you?", name="Model"),
+                    HumanMessage(content="I'm looking for information on marine biology.", name="Lance")
+                   ]
+
+# New message to add
+new_message = AIMessage(content="Sure, I can help with that. What specifically are you interested in?", name="Model")
+
+# Test
+add_messages(initial_messages , new_message)
+```
+
+```python
+# 根据 id 重写信息
+# Initial state
+initial_messages = [AIMessage(content="Hello! How can I assist you?", name="Model", id="1"),
+                    HumanMessage(content="I'm looking for information on marine biology.", name="Lance", id="2")
+                   ]
+
+# New message to add
+new_message = HumanMessage(content="I'm looking for information on whales, specifically", name="Lance", id="2")
+
+# Test
+add_messages(initial_messages , new_message)
+```
+
+```python
+# 移除信息
+from langchain_core.messages import RemoveMessage
+
+# Message list
+messages = [AIMessage("Hi.", name="Bot", id="1")]
+messages.append(HumanMessage("Hi.", name="Lance", id="2"))
+messages.append(AIMessage("So you said you were researching ocean mammals?", name="Bot", id="3"))
+messages.append(HumanMessage("Yes, I know about whales. But what others should I learn about?", name="Lance", id="4"))
+
+# Isolate messages to delete
+delete_messages = [RemoveMessage(id=m.id) for m in messages[:-2]]
+print(delete_messages)
+add_messages(messages , delete_messages)
+```
+
+
+
+## 多模式
+
+  现在，让我们在图中使用特定的 `input` 和 `output` 模式。
+
+这里，`input` / `output` 模式对图的输入和输出中允许的键进行**过滤**。
+
+此外，我们可以使用类型提示 `state: InputState` 来指定每个节点的输入模式。
+
+当图使用多个模式时，这一点尤为重要。
+
+例如，我们使用以下类型提示来表明 `answer_node` 的输出将被过滤为 `OutputState`。
+
+```python
+class InputState(TypedDict):
+    question: str
+
+class OutputState(TypedDict):
+    answer: str
+
+class OverallState(TypedDict):
+    question: str
+    answer: str
+    notes: str
+
+def thinking_node(state: InputState):
+    return {"answer": "bye", "notes": "... his is name is Lance"}
+
+def answer_node(state: OverallState) -> OutputState:
+    return {"answer": "bye Lance"}
+
+graph = StateGraph(OverallState, input_schema=InputState, output_schema=OutputState)
+graph.add_node("answer_node", answer_node)
+graph.add_node("thinking_node", thinking_node)
+graph.add_edge(START, "thinking_node")
+graph.add_edge("thinking_node", "answer_node")
+graph.add_edge("answer_node", END)
+
+graph = graph.compile()
+
+# View
+display(Image(graph.get_graph().draw_mermaid_png()))
+
+graph.invoke({"question":"hi"})
+```
+
+## 过滤和修剪消息
+
+###  消息过滤
+
+通过 `RemoveMessage` 删除消息
+
+```python
+from langchain_core.messages import RemoveMessage
+
+# Nodes
+def filter_messages(state: MessagesState):
+    # Delete all but the 2 most recent messages
+    # 删除除最近两条消息之外的所有消息。
+    delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-2]]
+    return {"messages": delete_messages}
+
+def chat_model_node(state: MessagesState):    
+    return {"messages": [llm.invoke(state["messages"])]}
+
+# Build graph
+builder = StateGraph(MessagesState)
+builder.add_node("filter", filter_messages)
+builder.add_node("chat_model", chat_model_node)
+builder.add_edge(START, "filter")
+builder.add_edge("filter", "chat_model")
+builder.add_edge("chat_model", END)
+graph = builder.compile()
+
+# View
+display(Image(graph.get_graph().draw_mermaid_png()))
+```
+
+查看效果：
+
+```python
+# Message list with a preamble
+messages = [AIMessage("Hi.", name="Bot", id="1")]
+messages.append(HumanMessage("Hi.", name="Lance", id="2"))
+messages.append(AIMessage("So you said you were researching ocean mammals?", name="Bot", id="3"))
+messages.append(HumanMessage("Yes, I know about whales. But what others should I learn about?", name="Lance", id="4"))
+
+# Invoke
+output = graph.invoke({'messages': messages})
+for m in output['messages']:
+    m.pretty_print()
+```
+
+
+
+如果不需要或不想修改图状态，您可以直接过滤传递给聊天模型的消息。
+
+例如，只需将过滤后的列表：`llm.invoke(messages[-1:])` 传递给模型即可。
+
+```python
+# Node
+def chat_model_node(state: MessagesState):
+    return {"messages": [llm.invoke(state["messages"][-1:])]}
+
+# Build graph
+builder = StateGraph(MessagesState)
+builder.add_node("chat_model", chat_model_node)
+builder.add_edge(START, "chat_model")
+builder.add_edge("chat_model", END)
+graph = builder.compile()
+
+# View
+display(Image(graph.get_graph().draw_mermaid_png()))
+```
+
+### 消息修剪
+
+另一种方法是根据预设的词元数量[修剪消息](https://docs.langchain.com/oss/python/langgraph/add-memory#trim-messages)。
+
+这会将消息历史记录限制在指定数量的词元内。
+
+过滤仅返回代理之间消息的后验子集，而修剪则限制了聊天模型可用于响应的词元数量。
+
+请参阅下面的 `trim_messages`。
+
+```python
+from langchain_core.messages import trim_messages
+
+# Node
+def chat_model_node(state: MessagesState):
+    messages = trim_messages(
+            state["messages"],
+            max_tokens=100,
+            strategy="last",
+            token_counter=ChatOpenAI(model="gpt-4o"),
+            allow_partial=False,
+        )
+    return {"messages": [llm.invoke(messages)]}
+
+# Build graph
+builder = StateGraph(MessagesState)
+builder.add_node("chat_model", chat_model_node)
+builder.add_edge(START, "chat_model")
+builder.add_edge("chat_model", END)
+graph = builder.compile()
+
+# View
+display(Image(graph.get_graph().draw_mermaid_png()))
+```
+
+
+
+## 带有消息摘要和外部数据库内存的聊天机器人
+
+### 导包
+
+```python
+import os, getpass # 和配置 key 相关
+from langchain_ollama import ChatOllama # 模型相关
+from langsmith import traceable # LangSmith 相关
+from langgraph.graph import MessagesState # 追加到消息列表 以 MessagesState 作为状态来传递 可以点进去看看样子
+from langchain_core.messages import HumanMessage, SystemMessage, RemoveMessage # 用户信息和系统信息和删除信息
+from langgraph.graph import START, END, StateGraph # 创建 图 相关
+from langgraph.prebuilt import tools_condition # 如果 LLM 决定调用工具，通向叫 "tools" 的节点，否则去 END 这部分没用上
+from langgraph.prebuilt import ToolNode # 内置的 ToolNode 组件，只需传入工具列表即可初始化它，相当于一个节点 这部分没用上
+from IPython.display import Image, display # 展示相关
+from langgraph.checkpoint.memory import MemorySaver # Agent memory 相关 这部分就是用的 SqliteSaver 来代替的
+import sqlite3 # 使用小巧、快速、流行的数据库 SQLite
+from langgraph.checkpoint.sqlite import SqliteSaver # 和 memory 相关
+```
+
+### 导入环境变量
+
+```python
+def _set_env(var: str):
+    if not os.environ.get(var):
+        os.environ[var] = getpass.getpass(f"{var}: ")
+
+# LangSmith 相关
+_set_env("LANGSMITH_API_KEY")
+os.environ["LANGSMITH_TRACING"] = "true"
+os.environ["LANGSMITH_PROJECT"] = "langchain-academy"
+```
+
+### 使用 SQLite 来持久化 数据
+
+```python
+# In memory
+# 在内存中创建一个数据库，关闭线程检测，共享这个数据库
+# conn = sqlite3.connect(":memory:", check_same_thread = False)
+
+# 如果提供路径，就会创建一个数据库
+db_path = r"D:\code\langchain\langchain-academy\module-2\state_db\test.db"
+conn = sqlite3.connect(db_path, check_same_thread=False)
+```
+
+定义 memory 和数据库绑定
+
+```python
+memory = SqliteSaver(conn)
+```
+
+### 定义聊天机器人
+
+```python
+qwen = ChatOllama(
+    model="qwen3:8b",
+    temperature=0,
+)
+
+# 自定义状态，加上个总结字段
+class State(MessagesState):
+    summary: str
+
+# 定义调用模型的逻辑
+def call_model(state: State):
+    # 如果存在摘要，获得摘要
+    summary = state.get("summary","")
+
+    # 如果有摘要，加入进去
+    if summary:
+
+        # 将摘要添加进系统提示信息
+        system_message = f"先前对话的总结：{summary}"
+
+        # 将摘要添加到任何较新的消息中(放在最前面，最先读到系统提示)
+        messages = [SystemMessage(content=system_message)] + state["messages"]
+
+    else:
+        messages = state["messages"]
+
+    response = qwen.invoke(messages)
+    return {"messages": response}
+
+# 总结对话内容
+def summarize_conversation(state: State):
+
+    # 首先，要获得任何存在的摘要
+    summary = state.get("summary","")
+
+    # 创建自己的摘要模板
+    if summary:
+
+        # 已经存在摘要
+        summary_message = (
+            f"这是迄今为止的对话摘要：{summary}\n\n"
+            "请根据以上新消息补充摘要："
+        )
+
+    else:
+        summary_message = "请总结以上对话内容："
+
+    # 在历史记录中添加提示
+    messages = state["messages"] + [HumanMessage(content=summary_message)]
+    response = qwen.invoke(messages)
+
+    # 删除除最近两条消息之外的所有消息
+    # 把前面的总结了就不需要留下来了
+    delete_messages = [RemoveMessage(id=m.id) for m in state["messages"][:-2]]
+    # 把摘要存起来，然后删除多余的消息
+    return {"summary": response.content, "messages": delete_messages}
+
+# 决定是结束对话还是总结对话
+def should_continue(state: State) -> Literal ["summarize_conversation", END]:
+    """
+    返回要执行的下一个节点
+    """
+    messages = state["messages"]
+
+    # 如果超过六条信息，就对对话进行总结
+    if len(messages) > 6:
+        return "summarize_conversation"
+
+    return END
+```
+
+
+
+### 使用 SQLite Checkpointer 来构建图
+
+```python
+# 定义 一个 新的 图
+workflow = StateGraph(State)
+workflow.add_node("conversation", call_model)
+workflow.add_node(summarize_conversation)
+
+# 设置入口点为 conversation
+workflow.add_edge(START, "conversation")
+workflow.add_conditional_edges("conversation", should_continue)
+workflow.add_edge("conversation", END)
+
+# 组合
+graph = workflow.compile(checkpointer=memory)
+display(Image(graph.get_graph().draw_mermaid_png()))
+```
+
+
+
+### 测试效果
+
+创建一个线程并多次调用
+
+```python
+# 创建一个线程
+config = {"configurable": {"thread_id": "1"}}
+
+# 开始对话
+input_message = HumanMessage(content="你好，我是文轶")
+output = graph.invoke({"messages": [input_message]}, config) 
+for m in output['messages'][-1:]:
+    m.pretty_print()
+
+input_message = HumanMessage(content="你还记得我的名字吗？")
+output = graph.invoke({"messages": [input_message]}, config) 
+for m in output['messages'][-1:]:
+    m.pretty_print()
+
+input_message = HumanMessage(content="我喜欢玩博德之门3！")
+output = graph.invoke({"messages": [input_message]}, config) 
+for m in output['messages'][-1:]:
+    m.pretty_print()
+```
+
+查看所有聊天记录
+
+```python
+for m in output['messages']:
+    m.pretty_print()
+```
+
+确认一下状态是否已经在本地保存
+
+可以重启内核后再次调用试试
+
+```python
+config = {"configurable": {"thread_id": "1"}}
+graph_state = graph.get_state(config)
+graph_state
+```
+
+重启后打印全部历史记录
+
+```python
+# 1. 获取 snapshot 对象 (包裹)
+graph_state = graph.get_state(config)
+
+# 2. 打开包裹，拿出 values 字典 (里面的东西)
+all_values = graph_state.values 
+# 此时 all_values 类似： {'messages': [HumanMessage(...), AIMessage(...)]}
+
+# 3. 从字典里取出 "messages" 列表
+chat_history = all_values["messages"]
+
+# --- 打印出来看看 ---
+for msg in chat_history:
+    msg.pretty_print() # LangChain 自带的漂亮打印方法
 ```
 
