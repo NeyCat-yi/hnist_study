@@ -1,0 +1,30 @@
+2026-01-31 15:37:20.822 I [MediaServer.exe] [17796-30652] main.cpp:271 start_main | ZLMediaKit(git hash:a050f38/2025-05-11T11:18:34+08:00,branch:,build time:2025-05-11T03:24:50)
+2026-01-31 15:37:20.843 W [MediaServer.exe] [17796-30652] SSLUtil.cpp:104 loadPublicKey | BIO_new_file failed: error:80000002:system library::No such file or directory
+2026-01-31 15:37:20.843 W [MediaServer.exe] [17796-30652] SSLUtil.cpp:132 loadPrivateKey | BIO_new_file failed: error:10000080:BIO routines::no such file
+2026-01-31 15:37:20.843 W [MediaServer.exe] [17796-30652] SSLUtil.cpp:213 makeSSLContext | SSL_CTX_check_private_key failed: error:80000002:system library::No such file or directory
+2026-01-31 15:37:20.843 D [MediaServer.exe] [17796-stamp thread] util.cpp:391 operator () | Stamp thread started
+2026-01-31 15:37:20.850 I [MediaServer.exe] [17796-30652] EventPoller.cpp:616 EventPollerPool | EventPoller created size: 16
+2026-01-31 15:37:20.850 I [MediaServer.exe] [17796-30652] main.cpp:396 start_main | 已启动http api 接口
+2026-01-31 15:37:20.850 I [MediaServer.exe] [17796-30652] main.cpp:398 start_main | 已启动http hook 接口
+2026-01-31 15:37:20.851 I [MediaServer.exe] [17796-30652] TcpServer.cpp:242 start_l | TCP server listening on [::]: 9994
+2026-01-31 15:37:20.852 I [MediaServer.exe] [17796-30652] TcpServer.cpp:242 start_l | TCP server listening on [::]: 9995
+2026-01-31 15:37:20.853 I [MediaServer.exe] [17796-30652] TcpServer.cpp:242 start_l | TCP server listening on [::]: 9992
+2026-01-31 15:37:28.928 I [MediaServer.exe] [17796-event poller 15] Rtsp.cpp:471 getPortPair | got port from pool:39582-39583
+2026-01-31 15:37:28.932 D [MediaServer.exe] [17796-event poller 15] MediaSink.cpp:196 emitAllTrackReady | All track ready use 15ms
+2026-01-31 15:37:28.933 I [MediaServer.exe] [17796-event poller 15] MediaSource.cpp:505 emitEvent | 媒体注册:fmp4://__defaultVhost__/live/stream1
+2026-01-31 15:37:28.933 I [MediaServer.exe] [17796-event poller 15] MultiMediaSourceMuxer.cpp:597 onAllTrackReady | stream: rtsp://127.0.0.1:9994/live/stream1 , codec info: H264[544/960/29] mpeg4-generic[8000/1/16] 
+2026-01-31 15:37:28.933 I [MediaServer.exe] [17796-event poller 15] MediaSource.cpp:505 emitEvent | 媒体注册:rtmp://__defaultVhost__/live/stream1
+2026-01-31 15:37:28.933 I [MediaServer.exe] [17796-event poller 15] MediaSource.cpp:505 emitEvent | 媒体注册:ts://__defaultVhost__/live/stream1
+2026-01-31 15:37:28.933 I [MediaServer.exe] [17796-event poller 15] MediaSource.cpp:505 emitEvent | 媒体注册:rtsp://__defaultVhost__/live/stream1
+2026-01-31 15:37:30.505 I [MediaServer.exe] [17796-event poller 15] Rtsp.cpp:471 getPortPair | got port from pool:38810-38811
+2026-01-31 15:37:30.508 D [MediaServer.exe] [17796-event poller 15] MediaSink.cpp:196 emitAllTrackReady | All track ready use 15ms
+2026-01-31 15:37:30.508 I [MediaServer.exe] [17796-event poller 15] MediaSource.cpp:505 emitEvent | 媒体注册:fmp4://__defaultVhost__/live/stream2
+2026-01-31 15:37:30.508 I [MediaServer.exe] [17796-event poller 15] MultiMediaSourceMuxer.cpp:597 onAllTrackReady | stream: rtsp://127.0.0.1:9994/live/stream2 , codec info: H264[544/960/29] mpeg4-generic[8000/1/16] 
+2026-01-31 15:37:30.508 I [MediaServer.exe] [17796-event poller 15] MediaSource.cpp:505 emitEvent | 媒体注册:rtmp://__defaultVhost__/live/stream2
+2026-01-31 15:37:30.508 I [MediaServer.exe] [17796-event poller 15] MediaSource.cpp:505 emitEvent | 媒体注册:ts://__defaultVhost__/live/stream2
+2026-01-31 15:37:30.508 I [MediaServer.exe] [17796-event poller 15] MediaSource.cpp:505 emitEvent | 媒体注册:rtsp://__defaultVhost__/live/stream2
+2026-01-31 15:37:39.865 I [MediaServer.exe] [17796-event poller 14] Rtsp.cpp:471 getPortPair | got port from pool:31824-31825
+2026-01-31 15:37:39.867 I [MediaServer.exe] [17796-event poller 14] RtspSession.cpp:823 handleReq_Play | 3-884(127.0.0.1:59300) rtsp seekTo(ms):0
+2026-01-31 15:37:39.867 I [MediaServer.exe] [17796-event poller 14] RtspSession.cpp:853 handleReq_Play | 3-884(127.0.0.1:59300) 指定播放track:0
+2026-01-31 15:38:12.642 W [MediaServer.exe] [17796-event poller 14] RtspSession.cpp:62 onError | 3-884(127.0.0.1:59300) RTSP播放器(__defaultVhost__/live/stream1)断开:recv teardown request,耗时(s):32
+2026-01-31 15:38:12.642 I [MediaServer.exe] [17796-event poller 14] Rtsp.cpp:480 operator () | return port to pool:31824-31825
