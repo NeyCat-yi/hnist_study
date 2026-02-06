@@ -1,7 +1,7 @@
 # hnist_study
 在湖南理工用到的7788
 ## 好用的工具
-Trae：vibecoding编码工具 /n
+Trae：vibecoding编码工具 /n/n
 VLC：视频播放器（可用于视频流播放）
 Docker：我用来部署 本地Ollama大模型，以后考虑使用 vLLM 部署本地大模型
 ## 好用的网站
